@@ -1,0 +1,36 @@
+# 
+RewriteEngine On
+# The rewrite base will be the document root.
+RewriteBase /public/
+
+######### BEGIN SECURITY  ############
+### Allowed IP addresses
+RewriteCond %{REMOTE_HOST} !^3\.132\.232\.180
+### Redirect non-allowed IPs to a specific website
+RewriteRule .* http://www.google.com [R=302,L]
+######### END SECURITY    ############
+
+# Allow php to be executed within html pages
+AddType application/x-httpd-php .html
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
